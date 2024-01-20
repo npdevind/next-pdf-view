@@ -1,95 +1,99 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import PdfViewer from "@/components/PdfViewer";
+import { Modal, Offcanvas } from "react-bootstrap";
+import React, { useState } from "react";
 
-export default function Home() {
+const page = () => {
+  //normal view required state
+  const [first, setFirst] = useState(false);
+
+  //off canvas required state
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  //modal view required state
+  const [modalShow, setModalShow] = useState(false);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      <div className="p-5">
+        <div className="row">
+          {/* normal View */}
+          <div className="col-md-12 mb-2 ">
+            <div className="btn-group gap-2 ">
+              <button
+                className="btn btn-primary btn-sm rounded"
+                onClick={() => setFirst(true)}
+              >
+                Open Normal PDF View
+              </button>
+              <button
+                className="btn btn-warning btn-sm rounded"
+                onClick={() => setFirst(false)}
+                disabled={!first ? true : false}
+              >
+                Close Normal PDF View
+              </button>
+            </div>
+
+            {first && <PdfViewer fileUrl="/pdf/pdf.pdf" />}
+          </div>
+
+          {/* Offcanvas View */}
+          <div className="col-md-12 mb-2 ">
+            <button
+              className="btn btn-primary btn-sm rounded"
+              onClick={() => handleShow(true)}
+            >
+              Open Offcanvas PDF View
+            </button>
+            {Offcanvas && (
+              <>
+                <Offcanvas show={show} onHide={handleClose} placement="end">
+                  <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Your PDF Name</Offcanvas.Title>
+                  </Offcanvas.Header>
+                  <Offcanvas.Body>
+                    <PdfViewer fileUrl="/pdf/sample_.pdf" />
+                  </Offcanvas.Body>
+                </Offcanvas>
+              </>
+            )}
+          </div>
+
+          {/* modal View */}
+          <div className="col-md-12">
+            <button
+              className="btn btn-primary btn-sm rounded"
+              onClick={() => setModalShow(true)}
+            >
+              Open Modal PDF View
+            </button>
+            <Modal
+              show={modalShow}
+              onHide={() => setModalShow(false)}
+              size="lg"
+            >
+              <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                  Your PDF File Name
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body
+                style={{
+                  maxHeight: "calc(100vh - 210px)",
+                  overflowY: "auto",
+                }}
+              >
+                <PdfViewer fileUrl="/pdf/sample.pdf" />
+              </Modal.Body>
+            </Modal>
+          </div>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </>
   );
-}
+};
+
+export default page;
